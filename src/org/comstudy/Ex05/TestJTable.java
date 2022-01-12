@@ -1,6 +1,7 @@
 package org.comstudy.Ex05;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -11,12 +12,28 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.plaf.synth.SynthRadioButtonMenuItemUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import org.comstudy.guiex.myframe.MyJFrame;
 
-import static org.comstudy.Ex05.R.*;
+import static org.comstudy.Ex05.R.allBtn;
+import static org.comstudy.Ex05.R.columNames;
+import static org.comstudy.Ex05.R.data;
+import static org.comstudy.Ex05.R.dao;
+import static org.comstudy.Ex05.R.deleteBtn;
+import static org.comstudy.Ex05.R.finishBtn;
+import static org.comstudy.Ex05.R.inputBtn;
+import static org.comstudy.Ex05.R.tbModel;
+import static org.comstudy.Ex05.R.modifyBtn;
+import static org.comstudy.Ex05.R.scrollPane;
+import static org.comstudy.Ex05.R.searchBtn;
+import static org.comstudy.Ex05.R.table;
+import static org.comstudy.Ex05.R.txtFld1;
+import static org.comstudy.Ex05.R.txtFld2;
+import static org.comstudy.Ex05.R.txtFld3;
+import static org.comstudy.Ex05.R.txtFld4;
 
 public class TestJTable extends MyJFrame {
 
@@ -75,6 +92,8 @@ public class TestJTable extends MyJFrame {
 	}
 	
 	
+
+
 	
 	
 	@Override
@@ -121,13 +140,22 @@ public class TestJTable extends MyJFrame {
 		});
 		
 		
+		
+		
+		
 		// 버튼 이벤트 핸들러 추가
+		
+		// 전체 검색
 		allBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(">>> allBtn 클릭!");
+				dao.selectAll();
 				
 			}
 		});
+		
+		
+		
+		// 삽입
 		inputBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -150,7 +178,8 @@ public class TestJTable extends MyJFrame {
 				displayList();
 				
 			}
-
+			
+			
 			private void displayList() {
 				// 데이터 삭제
 				tbModel.setDataVector(null, columNames);
@@ -162,25 +191,102 @@ public class TestJTable extends MyJFrame {
 				}
 				
 			}
+
 		});
+		
+
+		
+		// 검색
 		searchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(">>> searchBtn 클릭!");
+				String name = txtFld2.getText();
+				txtFld2.setText("");
+				
+
+				Vector<Vector> saramList = dao.selectByName(new SaramDTO(0, name, null, null));
+				
+				displayList(saramList);
+				
 				
 			}
+			
+			
+			
+			private void displayList(Vector<Vector> sList) {
+				// 데이터 삭제
+				tbModel.setDataVector(null, columNames);
+				
+				
+				Vector<Vector> saramList = sList;
+				for (Vector vector : saramList) {
+					
+				// 데이터 추가
+				tbModel.addRow(vector);
+				}
+				
+			}
+			
+			
 		});
+		
+		// 수정
 		modifyBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(">>> modifyBtn 클릭!");
+				
+				String id = txtFld1.getText();
+				txtFld2.setText("");
+				String name = txtFld2.getText();
+				txtFld2.setText("");
+				String email = txtFld3.getText();
+				txtFld3.setText("");
+				String phone = txtFld4.getText();
+				txtFld4.setText("");
+				
+				int idx = 0;
+				
+				try {
+					idx = Integer.parseInt(id);
+				} catch (NumberFormatException e1) {
+					idx = 0;
+				}
+				
+				Vector vector = dao.modify(new SaramDTO(idx, name, email, phone));
+				
+				displayAll();
+				
 				
 			}
+
+			private void displayAll() {
+				tbModel.setDataVector(null, columNames);
+				Vector<Vector> saramList = dao.selectAll();
+				for(Vector vector : saramList) {
+					tbModel.addRow(vector);
+				}
+				
+			}
+
 		});
+		
+		//삭제
 		deleteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(">>> deleteBtn 클릭!");
+				String name = txtFld2.getText();
+				txtFld2.setText("");
+
+				
+				
+				 dao.delete(new SaramDTO(0, name, null, null));
+				
+				
+
 				
 			}
+
+
 		});
+		
+		//종료
 		finishBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(TestJTable.this, "굿바이~");
@@ -195,13 +301,13 @@ public class TestJTable extends MyJFrame {
 		
 	}
 	
+
 	public static void main(String[] args) {
 		new TestJTable().setVisible(true);
 	}
 	
 	
-	
-	
+
 	
 	
 	

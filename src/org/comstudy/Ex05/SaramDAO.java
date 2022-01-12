@@ -29,4 +29,57 @@ public class SaramDAO {
 			saramList.add(saramDTO);
 		}
 	}
+
+	
+	public Vector selectByName(SaramDTO saramInfo) {
+		Vector saraminfo = new Vector();
+		for(int idx=0; idx<saramList.size(); idx++) {
+			
+			
+			if(saramInfo.getName().equals(saramList.get(idx).getName())) {
+				saraminfo.add(saramList.get(idx).toVector());
+			}
+			
+		}
+		return saraminfo;
+	}
+
+	public Vector modify(SaramDTO saramInfo) {
+		int idx = saramList.indexOf(saramInfo);
+		Vector vector = new Vector();
+		if(idx != -1) {
+			saramList.set(idx, saramInfo);
+			vector = saramList.get(idx).toVector();
+			return vector;
+		}
+		
+		
+		return null;
+
+	}
+
+	public Vector delete(SaramDTO saramInfo) {
+		Vector saraminfo = new Vector();
+		for(int idx=0; idx<saramList.size(); idx++) {
+			SaramDTO Info = saramList.get(idx);
+			
+			if(saramInfo.getName().equals(Info.getName())) {
+				saraminfo.remove(idx);
+			}
+		}
+		return saraminfo;
+			
+		
+	}
+
+	
+	
+	
+
+
+	
+	
+	
+	
+	
 }
